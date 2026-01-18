@@ -1,5 +1,11 @@
+// ================= BASE API CONFIG =================
+
+// Use Vercel env in production, localhost in dev
 const API_BASE =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+  process.env.REACT_APP_API_URL ||
+  "https://expense-tracker-backend-u4so.onrender.com/api";
+
+// ================= AUTH HEADERS =================
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -46,12 +52,15 @@ export async function fetchExpenses({
   if (category) params.set("category", category);
   if (date) params.set("date", date);
 
-  const res = await fetch(`${API_BASE}/expenses?${params.toString()}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
-  });
+  const res = await fetch(
+    `${API_BASE}/expenses?${params.toString()}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+      },
+    }
+  );
 
   if (!res.ok) {
     const body = await handleResponse(res);
@@ -123,7 +132,7 @@ export async function getExpenseById(id) {
   return handleResponse(res);
 }
 
-/* ================= BUDGET APIs (FEATURE 6) ================= */
+/* ================= BUDGET APIs ================= */
 
 export async function getBudget() {
   const res = await fetch(`${API_BASE}/budget`, {
@@ -156,6 +165,7 @@ export async function setBudget(monthlyBudget) {
   }
   return handleResponse(res);
 }
+
 /* ================= HEATMAP API ================= */
 
 export async function getHeatmap(days = 30) {
